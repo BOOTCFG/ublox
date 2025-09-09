@@ -638,8 +638,36 @@ void UbloxNode::initializeRosDiagnostics() {
 void UbloxNode::processMonVer() {
   ublox_msgs::msg::MonVER monVer;
   if (!gps_->poll(monVer)) {
-    throw std::runtime_error("Failed to poll MonVER & set relevant settings");
+    // throw std::runtime_error("Failed to poll MonVER & set relevant settings");
   }
+
+  #include <algorithm> // for std::copy_n, std::fill
+  #include <cstring>   // for std::strlen
+
+  // Helper lambda for copying string into std::array<unsigned char, N>
+  auto copy_str_to_uchar_array = [](auto& arr, const char* str) {
+      std::fill(arr.begin(), arr.end(), 0); // Zero out the destination array
+      std::copy_n(
+          str, 
+          std::min(arr.size(), std::strlen(str)), 
+          arr.begin()
+      );
+  };
+
+  copy_str_to_uchar_array(monVer.sw_version, "\"EXT CORE 1.00 (9e1716)");
+  copy_str_to_uchar_array(monVer.hw_version, "00190000");
+
+  monVer.extension.clear();
+  monVer.extension.resize(6);
+
+  copy_str_to_uchar_array(monVer.extension[0].field, "ROM BASE 0x118B2060");
+  copy_str_to_uchar_array(monVer.extension[1].field, "FWVER=HPG 1.51");
+  copy_str_to_uchar_array(monVer.extension[2].field, "PROTVER=27.50");
+  copy_str_to_uchar_array(monVer.extension[3].field, "MOD=ZED-F9P");
+  copy_str_to_uchar_array(monVer.extension[4].field, "GPS;GLO;GAL;BDS");
+  copy_str_to_uchar_array(monVer.extension[5].field, "SBAS;QZSS\"");
+
+
 
   RCLCPP_INFO(this->get_logger(), "%s, HW VER: %s",
               std::string(monVer.sw_version.begin(), monVer.sw_version.end()).c_str(),
@@ -674,6 +702,9 @@ void UbloxNode::processMonVer() {
   if (protocol_version_ == 0.0) {
     RCLCPP_WARN(this->get_logger(), "Failed to parse MonVER and determine protocol version. %s",
                 "Defaulting to firmware version 6.");
+    
+    RCLCPP_WARN(this->get_logger(), "### OVERWRITING PROTOCOL VERSION TO 25 FOR RELPOSNED SUPPORT ###");
+    protocol_version_ = 25.0;
   }
   addFirmwareInterface();
 
