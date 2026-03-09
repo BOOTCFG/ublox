@@ -114,6 +114,8 @@
 
 #include <ublox_msgs/msg/tim_tm2.hpp>
 
+#include <ublox_msgs/msg/sec_uniqid.hpp>
+
 namespace ublox_msgs {
 
 namespace Class {
@@ -261,6 +263,10 @@ namespace Message {
   namespace TIM {
     static const uint8_t TM2 = ublox_msgs::msg::TimTM2::MESSAGE_ID;
   }  // namespace TIM
+
+  namespace SEC {
+    static const uint8_t UNIQID = ublox_msgs::msg::SecUNIQID::MESSAGE_ID;
+  }  // namespace SEC
 }  // namespace Message
 
 }  // namespace ublox_msgs

@@ -96,6 +96,7 @@ set(msg_files
   "msg/RxmSFRBX.msg"
   "msg/RxmSVSI.msg"
   "msg/RxmSVSISV.msg"
+  "msg/SecUNIQID.msg"
   "msg/TimTM2.msg"
   "msg/UpdSOSAck.msg"
   "msg/UpdSOS.msg"
