@@ -188,7 +188,6 @@ UbloxNode::UbloxNode(const rclcpp::NodeOptions & options) : rclcpp::Node("ublox_
   gnss_ = std::make_shared<Gnss>();
 
   updater_ = std::make_shared<diagnostic_updater::Updater>(this);
-  updater_->setHardwareID("ublox");
 
   initialize();
 }
@@ -733,6 +732,22 @@ void UbloxNode::processMonVer() {
   }
 }
 
+void UbloxNode::processSecUniqID(){
+
+  ublox_msgs::msg::SecUNIQID secUniqueId;
+  if (!gps_->poll(secUniqueId)) {
+    throw std::runtime_error("Failed to poll MonVER & set relevant settings");
+  }
+
+  for (int i = 0; i < 5; i++) {
+    sprintf(&unique_id_[i * 2], "%02X", secUniqueId.unique_id[i]);
+  }
+
+  RCLCPP_INFO(this->get_logger(), "U-Blox Unique ID: %s", unique_id_);
+
+  updater_->setHardwareID(unique_id_);
+}
+
 bool UbloxNode::configureUblox() {
   try {
     if (!gps_->isInitialized()) {
@@ -906,6 +921,9 @@ void UbloxNode::initialize() {
   for (const std::shared_ptr<ComponentInterface> & component : components_) {
     component->getRosParams();
   }
+
+  processSecUniqID();
+
   // Do this last
   initializeRosDiagnostics();
 
