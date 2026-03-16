@@ -178,6 +178,11 @@ class UbloxNode final : public rclcpp::Node {
   void processMonVer();
 
   /**
+   * @brief Get the unique ID of the u-blox device and set it internally.
+   */
+  void processSecUniqID();
+
+  /**
    * @brief Add the interface for firmware specific configuration, subscribers,
    * & diagnostics. This assumes the protocol_version_ has been set.
    */
@@ -217,6 +222,8 @@ class UbloxNode final : public rclcpp::Node {
 
   //! Determined From Mon VER
   float protocol_version_ = 0.0;
+  //! Determined From Sec UNIQID
+  char unique_id_[10] = "";
   // Variables set from parameter server
   //! Device port
   std::string device_;

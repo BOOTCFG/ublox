@@ -2997,6 +2997,30 @@ struct UbloxSerializer<ublox_msgs::msg::RxmSVSI_<ContainerAllocator> > {
 };
 
 template <typename ContainerAllocator>
+struct UbloxSerializer<ublox_msgs::msg::SecUNIQID_<ContainerAllocator> > {
+  inline static void read(const uint8_t *data, uint32_t count,
+                          ublox_msgs::msg::SecUNIQID_<ContainerAllocator> &m) {
+    UbloxIStream stream(const_cast<uint8_t *>(data), count);
+    stream.next(m.version);
+    stream.next(m.reserved1);
+    stream.next(m.unique_id);
+  }
+
+  inline static uint32_t serializedLength(const ublox_msgs::msg::SecUNIQID_<ContainerAllocator> &m) {
+    (void)m;
+    return 9;
+  }
+
+  inline static void write(uint8_t *data, uint32_t size,
+                           const ublox_msgs::msg::SecUNIQID_<ContainerAllocator> &m) {
+    UbloxOStream stream(data, size);
+    stream.next(m.version);
+    stream.next(m.reserved1);
+    stream.next(m.unique_id);
+  }
+};
+
+template <typename ContainerAllocator>
 struct UbloxSerializer<ublox_msgs::msg::TimTM2_<ContainerAllocator> > {
   inline static void read(const uint8_t *data, uint32_t count,
                           ublox_msgs::msg::TimTM2_<ContainerAllocator> &m) {
