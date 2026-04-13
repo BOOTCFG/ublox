@@ -736,7 +736,7 @@ void UbloxNode::processSecUniqID(){
 
   ublox_msgs::msg::SecUNIQID secUniqueId;
   if (!gps_->poll(secUniqueId)) {
-    throw std::runtime_error("Failed to poll MonVER & set relevant settings");
+    throw std::runtime_error("Failed to poll SecUniqID");
   }
 
   for (int i = 0; i < 5; i++) {
