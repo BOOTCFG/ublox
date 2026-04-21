@@ -223,7 +223,7 @@ class UbloxNode final : public rclcpp::Node {
   //! Determined From Mon VER
   float protocol_version_ = 0.0;
   //! Determined From Sec UNIQID
-  char unique_id_[10] = "";
+  char unique_id_[11] = "";
   // Variables set from parameter server
   //! Device port
   std::string device_;

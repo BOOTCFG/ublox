@@ -106,12 +106,14 @@ struct UbloxSerializer<T, typename std::enable_if<std::is_same<T, uint8_t>::valu
 {
   template<typename Stream>
   inline static void write(Stream& stream, const T v) {
-    *reinterpret_cast<T*>(stream.advance(sizeof(v))) = v;
+    void* p = stream.advance(sizeof(v));
+    std::memcpy(p, &v, sizeof(v));
   }
 
   template<typename Stream>
   inline static void read(Stream& stream, T& v) {
-    v = *reinterpret_cast<T*>(stream.advance(sizeof(v)));
+    const void* p = stream.advance(sizeof(v));
+    std::memcpy(&v, p, sizeof(v));
   }
 
   inline static uint32_t serializedLength(const T& v) {
@@ -472,8 +474,9 @@ class Reader {
    * @return the checksum of the u-blox message
    */
   uint16_t checksum() {
-    return *reinterpret_cast<const uint16_t *>(data_ + options_.header_length +
-                                               length());
+    uint16_t value;
+    std::memcpy(&value, data_ + options_.header_length + length(), sizeof(value));
+    return value;
   }
 
   /**

@@ -738,10 +738,14 @@ void UbloxNode::processSecUniqID(){
   if (!gps_->poll(secUniqueId)) {
     throw std::runtime_error("Failed to poll SecUniqID");
   }
+  static constexpr char hex[] = "0123456789ABCDEF";
 
   for (int i = 0; i < 5; i++) {
-    sprintf(&unique_id_[i * 2], "%02X", secUniqueId.unique_id[i]);
+    unique_id_[2 * i]     = hex[(secUniqueId.unique_id[i] >> 4) & 0xF];
+    unique_id_[2 * i + 1] = hex[secUniqueId.unique_id[i] & 0xF];
   }
+  unique_id_[10] = '\0';
+
 
   RCLCPP_INFO(this->get_logger(), "U-Blox Unique ID: %s", unique_id_);
 
